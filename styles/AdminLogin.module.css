@@ -1,0 +1,24 @@
+.adminLoginForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 30rem;
+    flex-direction: column;
+}
+
+.adminLoginForm form {
+    width: 28rem;
+}
+
+.adminLoginForm form button {
+    width: 100%;
+}
+
+.adminLoginForm .title {
+    width: 28rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: gray;
+}
