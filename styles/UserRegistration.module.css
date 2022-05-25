@@ -1,6 +1,6 @@
 .registrationContainer {
   display: flex;
-  display: flex;
+
   justify-content: center;
 }
 
@@ -26,4 +26,13 @@
   font-weight: bold;
   margin: 30px 0;
   color: gray;
+}
+.userPinGenerator {
+  padding-top: 10px;
+  padding-bottom: 20px;
+  width: 28%;
+}
+.userCustomisePin {
+  padding-top: 10px;
+  width: 40%;
 }

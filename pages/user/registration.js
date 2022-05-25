@@ -2,6 +2,9 @@ import { Button, Form, Input, Select } from "antd";
 import styles from "../../styles/UserRegistration.module.css";
 import { Fragment } from "react";
 import ProfilePictureUploader from "../../components/ProfilePictureUploader";
+import UserPinGenerate from "../../components/UserPinGenerate";
+import UserCustomPin from "../../components/UserCustomPin";
+
 const { Option } = Select;
 
 const formItemLayout = {
@@ -184,6 +187,11 @@ const UserRegistration = () => {
         <div className={styles.profileImageUploadSection}>
           Upload profile Picture
           <ProfilePictureUploader />
+          <div className={styles.userPinGenerator}>
+            <UserPinGenerate />
+            <p />
+            <UserCustomPin />
+          </div>
         </div>
       </div>
     </Fragment>
