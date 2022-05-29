@@ -27,4 +27,6 @@ a {
   user-select: none;
 }
 
-
+.user-registration-profile-wrapper .ant-upload-picture-card-wrapper {
+  width: fit-content !important;
+}
