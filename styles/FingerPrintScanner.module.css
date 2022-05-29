@@ -1,0 +1,10 @@
+.fingerPrintScanner .fingerPrintBox {
+  width: 120px;
+  height: 120px;
+  border: 1px solid gray;
+  user-select: none;
+}
+
+.fingerPrintScanner .fingerPrintBox img {
+  border-color: aqua;
+}
