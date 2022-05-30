@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./organizationCard.module.css";
+import styles from "../../styles/OrganizationCard.module.css";
 
 // tertiary
 // pre-tertiary
