@@ -5,11 +5,11 @@ import styles from "../styles/FingerPrintScanner.module.css";
 const FingerPrintScanner = () => {
   return (
     <div className={styles.fingerPrintScanner}>
-      <div>Scan Finger Print</div>
+      <div>Fingerprint</div>
       <div className={styles.fingerPrintBox}>
         <img src="/fingerprint.svg" alt="" />
       </div>
-      <Button style={{ width: "120px" }}>Scan</Button>
+      <Button style={{ width: "120px", marginTop: "5px" }}>Scan</Button>
     </div>
   );
 };

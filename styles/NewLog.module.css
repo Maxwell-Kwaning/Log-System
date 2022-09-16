@@ -1,0 +1,10 @@
+.title {
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: 2rem auto;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+}
