@@ -7,7 +7,6 @@
   display: flex;
   width: 40%;
   flex-direction: column;
-  align-items: center;
 }
 
 .title {
@@ -15,9 +14,11 @@
   text-align: center;
   text-transform: uppercase;
   font-weight: bold;
-  margin: 30px 0;
+  margin: 20px 0;
+  margin-left: -200px;
   color: gray;
 }
+
 .userPinGenerator {
   padding-top: 10px;
   padding-bottom: 20px;

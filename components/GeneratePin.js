@@ -16,9 +16,12 @@ const GeneratePin = () => {
     });
   };
 
+  const handleOnChange = (e) => {
+    setUserPin(e.target.value);
+  };
+
   return (
     <>
-      <div>Secrete Pin</div>
       <div style={{ display: "flex", width: "100%" }}>
         <Input.Password
           type="password"
@@ -28,11 +31,15 @@ const GeneratePin = () => {
           placeholder="Pin Code"
           style={{ width: "150px" }}
           value={userPin}
+          maxLength={6}
+          onChange={handleOnChange}
+          pattern="[0-9]*"
+          inputMode="numeric"
         />
         <Button onClick={handleGeneratePin}>Generate</Button>
       </div>
-      <small style={{ margin: "10px" }}>
-        NB: Pin should be secrete to only you.
+      <small style={{ margin: "10px 0" }}>
+        Pin should be 4-6 digits and must be secrete to only you.
       </small>
     </>
   );

@@ -58,7 +58,7 @@ const UserRegistration = () => {
 
   return (
     <Fragment>
-      <h1 className={styles.title}>User Registration </h1>
+      <h1 className={styles.title}>Add New user</h1>
       <Row>
         <Col span={16}>
           <div className={styles.userRegistrationForm}>
@@ -68,17 +68,17 @@ const UserRegistration = () => {
               name="register"
               onFinish={onFinish}
               initialValues={{
-                prefix: "86",
+                prefix: "233",
               }}
               scrollToFirstError
             >
               <Form.Item
-                label="Username"
-                name="username"
+                label="Full name"
+                name="fullname"
                 rules={[
                   {
                     required: true,
-                    message: "Please input your username!",
+                    message: "Please input your name!",
                   },
                 ]}
               >
@@ -100,49 +100,6 @@ const UserRegistration = () => {
               >
                 <Input />
               </Form.Item>
-
-              <Form.Item
-                name="password"
-                label="Password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your password!",
-                  },
-                ]}
-                hasFeedback
-              >
-                <Input.Password />
-              </Form.Item>
-
-              <Form.Item
-                name="confirm"
-                label="Confirm Password"
-                dependencies={["password"]}
-                hasFeedback
-                rules={[
-                  {
-                    required: true,
-                    message: "Please confirm your password!",
-                  },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue("password") === value) {
-                        return Promise.resolve();
-                      }
-
-                      return Promise.reject(
-                        new Error(
-                          "The two passwords that you entered do not match!"
-                        )
-                      );
-                    },
-                  }),
-                ]}
-              >
-                <Input.Password />
-              </Form.Item>
-
               <Form.Item
                 name="phone"
                 label="Phone Number"
@@ -160,7 +117,6 @@ const UserRegistration = () => {
                   }}
                 />
               </Form.Item>
-
               <Form.Item
                 name="gender"
                 label="Gender"
@@ -177,11 +133,12 @@ const UserRegistration = () => {
                   <Option value="other">Other</Option>
                 </Select>
               </Form.Item>
-
+              <Form.Item name="pin" label="User Pin">
+                <div className={styles.userPinGenerator}>
+                  <GeneratePin />
+                </div>
+              </Form.Item>
               <Form.Item {...tailFormItemLayout}>
-                <br />
-                <br />
-                <br />
                 <Button type="primary" htmlType="submit" block>
                   Register
                 </Button>
@@ -191,14 +148,11 @@ const UserRegistration = () => {
         </Col>
         <Col span={8}>
           <div className={styles.profileImageUploadSection}>
-            Upload profile Picture
+            Profile Picture
             <div className="user-registration-profile-wrapper">
               <ProfilePictureUploader />
             </div>
             <FingerPrintScanner />
-            <div className={styles.userPinGenerator}>
-              <GeneratePin />
-            </div>
           </div>
         </Col>
       </Row>
