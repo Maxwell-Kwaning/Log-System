@@ -70,3 +70,12 @@ a {
   margin-left: -200px;
   color: gray;
 }
+
+.btn-status-inactive .ant-radio-button-checked {
+  background-color: #ff4d4f;
+  color: #fff;
+}
+
+.btn-status-inactive {
+  border-color: #ff4d4f !important;
+}

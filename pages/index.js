@@ -1,11 +1,21 @@
-import { Button, Col, Image, Row, Typography } from "antd";
-import React from "react";
+import { Button, Image, Typography } from "antd";
+import React, { useEffect } from "react";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
+import { getAllOrganizations } from "../services/firebase.service";
 
 const { Title } = Typography;
 
 export default function Home() {
+  // useEffect(() => {
+  //   const fetchOrganizations = async () => {
+  //     const organizations = await getAllOrganizations();
+  //     console.log(organizations);
+  //   };
+
+  //   fetchOrganizations();
+  // }, []);
+
   return (
     <>
       <div className={styles.container}>

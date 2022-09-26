@@ -1,15 +1,22 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Input, Tag, Tooltip } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { v4 as uid } from "uuid";
+import { actionTypes, context } from "../consts/actions";
+import { AppContext } from "../store/context";
 
-export const AddList = () => {
-  const [tags, setTags] = useState([]);
+const { addDepartment, removeDepartment, editDepartment } =
+  actionTypes.tertiary;
+
+export const EditList = ({ title, label, tags, setTags }) => {
+  const { state } = useContext(AppContext);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [editInputIndex, setEditInputIndex] = useState(-1);
   const [editInputValue, setEditInputValue] = useState("");
   const inputRef = useRef(null);
   const editInputRef = useRef(null);
+
   useEffect(() => {
     if (inputVisible) {
       inputRef.current?.focus();
@@ -19,8 +26,8 @@ export const AddList = () => {
     editInputRef.current?.focus();
   }, [inputValue]);
 
-  const handleClose = (removedTag) => {
-    const newTags = tags.filter((tag) => tag !== removedTag);
+  const handleClose = (removedTagId) => {
+    const newTags = tags.filter((tag) => tag.id !== removedTagId);
     setTags(newTags);
   };
 
@@ -34,7 +41,8 @@ export const AddList = () => {
 
   const handleInputConfirm = () => {
     if (inputValue && tags.indexOf(inputValue) === -1) {
-      setTags([...tags, inputValue]);
+      const newTag = { id: uid(), value: inputValue };
+      setTags([...tags, newTag]);
     }
 
     setInputVisible(false);
@@ -47,7 +55,7 @@ export const AddList = () => {
 
   const handleEditInputConfirm = () => {
     const newTags = [...tags];
-    newTags[editInputIndex] = editInputValue;
+    newTags[editInputIndex].value = editInputValue;
     setTags(newTags);
     setEditInputIndex(-1);
     setInputValue("");
@@ -55,44 +63,45 @@ export const AddList = () => {
 
   return (
     <div style={{ margin: "0 0 2rem 1rem" }}>
-      <div>Add Departments</div>
+      <div>{label}</div>
       {tags.map((tag, index) => {
         if (editInputIndex === index) {
           return (
             <Input
               ref={editInputRef}
-              key={tag}
+              key={tag.id}
               size="small"
               className="tag-input"
               value={editInputValue}
               onChange={handleEditInputChange}
               onBlur={handleEditInputConfirm}
               onPressEnter={handleEditInputConfirm}
+              style={{ width: "200px" }}
             />
           );
         }
 
-        const isLongTag = tag.length > 20;
+        const isLongTag = tag.value.length > 20;
         const tagElem = (
           <Tag
             className="edit-tag"
-            key={tag}
+            key={tag.id}
             closable={true}
-            onClose={() => handleClose(tag)}
+            onClose={() => handleClose(tag.id)}
           >
             <span
               onDoubleClick={(e) => {
                 setEditInputIndex(index);
-                setEditInputValue(tag);
+                setEditInputValue(tag.value);
                 e.preventDefault();
               }}
             >
-              {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+              {isLongTag ? `${tag.value.slice(0, 20)}...` : tag.value}
             </span>
           </Tag>
         );
         return isLongTag ? (
-          <Tooltip title={tag} key={tag}>
+          <Tooltip title={tag.value} key={tag.id}>
             {tagElem}
           </Tooltip>
         ) : (
@@ -114,7 +123,7 @@ export const AddList = () => {
       )}
       {!inputVisible && (
         <Tag className="site-tag-plus" onClick={showInput}>
-          <PlusOutlined /> New Department
+          <PlusOutlined /> {title}
         </Tag>
       )}
     </div>
