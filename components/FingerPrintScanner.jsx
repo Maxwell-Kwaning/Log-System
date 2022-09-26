@@ -7,6 +7,7 @@ const FingerPrintScanner = () => {
     <div className={styles.fingerPrintScanner}>
       <div>Fingerprint</div>
       <div className={styles.fingerPrintBox}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/fingerprint.svg" alt="" />
       </div>
       <Button style={{ width: "120px", marginTop: "5px" }}>Scan</Button>

@@ -1,10 +1,8 @@
 import React from "react";
-import { Col, Row, Typography } from "antd";
+import { Col, Row } from "antd";
 import OrganizationCard from "./OrganizationCard";
 import styles from "./ChooseOrganization.module.css";
 import { organizations } from "../../helpers/organizations";
-
-const { Title } = Typography;
 
 const OrganizationList = () => {
   return (
@@ -24,11 +22,7 @@ const OrganizationList = () => {
               md={6}
               lg={4}
             >
-              <OrganizationCard
-                label={organization.name}
-                icon={organization.icon}
-                href={organization.href}
-              />
+              <OrganizationCard organization={organization} />
             </Col>
           ))}
         </Row>

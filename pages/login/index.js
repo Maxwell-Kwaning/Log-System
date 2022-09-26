@@ -1,9 +1,27 @@
-import { Button, Checkbox, Form, Input } from "antd";
+import { useEffect } from "react";
+import { Button, Checkbox, Form, Input, message } from "antd";
+import { accountLoginRequest } from "../../services/firebase.service";
 import styles from "../../styles/AdminLogin.module.css";
+import { useRouter } from "next/router";
 
 const Login = () => {
+  const router = useRouter();
+
   const onFinish = (values) => {
-    console.log("Success:", values);
+    const { email, password } = values;
+
+    accountLoginRequest(email, password).then((res) => {
+      if (res.length !== 0) {
+        const { id } = res[0];
+
+        message.success("Welcome back!");
+        router.push(`/dashboard/${id}`);
+      } else {
+        message.error(
+          "Login failed! Account details is incorrect or does not exist "
+        );
+      }
+    });
   };
 
   const onFinishFailed = (errorInfo) => {
