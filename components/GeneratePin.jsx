@@ -1,23 +1,20 @@
-import { useState, useEffect } from "react";
 import { Button, Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import * as securePin from "secure-pin";
 
-const GeneratePin = () => {
-  const [userPin, setUserPin] = useState("");
-
+const GeneratePin = ({ pin, setPin }) => {
   const handleGeneratePin = () => {
     generatePin();
   };
 
   const generatePin = () => {
     securePin.generatePin(6, (pin) => {
-      setUserPin(pin);
+      setPin(pin);
     });
   };
 
   const handleOnChange = (e) => {
-    setUserPin(e.target.value);
+    setPin(e.target.value);
   };
 
   return (
@@ -30,7 +27,7 @@ const GeneratePin = () => {
           }
           placeholder="Pin Code"
           style={{ width: "150px" }}
-          value={userPin}
+          value={pin}
           maxLength={6}
           onChange={handleOnChange}
           pattern="[0-9]*"

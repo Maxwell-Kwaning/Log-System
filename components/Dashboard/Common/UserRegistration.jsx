@@ -1,9 +1,16 @@
-import { Button, Col, Form, Input, Row, Select } from "antd";
+import { Button, Col, Form, Input, message, Row, Select } from "antd";
 import styles from "../../../styles/UserRegistration.module.css";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import ProfilePictureUploader from "../../../components/ProfilePictureUploader";
 import GeneratePin from "../../../components/GeneratePin";
 import FingerPrintScanner from "../../../components/FingerPrintScanner";
+import {
+  addNewUser,
+  createNewLogSheet,
+  createNewUser,
+  uploadImage,
+} from "../../../services/firebase.service";
+import { useRouter } from "next/router";
 
 const { Option } = Select;
 
@@ -39,11 +46,46 @@ const tailFormItemLayout = {
 };
 
 const UserRegistration = () => {
+  const { query } = useRouter();
+  const { organizationId } = query;
+  const [userPin, setUserPin] = useState("");
+  const [error, setError] = useState(undefined);
+  const [fileList, setFileList] = useState([]);
+
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+  const onFinish = async (values) => {
+    if (userPin.trim() === "") {
+      setError("Please enter user pin");
+      return false;
+    }
+
+    if (Number(userPin) === NaN) {
+      setError("User pin Should be only digit");
+      return false;
+    }
+
+    setError(undefined);
+    const newUser = {
+      ...values,
+      phone: `${values.prefix}${values.phone}`,
+      pin: Number(userPin),
+    };
+    await createNewUser({ ...newUser, organizationId });
+    form.resetFields();
+    setUserPin("");
+    message.success("user added successfully");
   };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  useEffect(() => {
+    if (userPin.trim() !== "") {
+      setError(undefined);
+    }
+  }, [userPin]);
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -67,6 +109,7 @@ const UserRegistration = () => {
               form={form}
               name="register"
               onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
               initialValues={{
                 prefix: "233",
               }}
@@ -78,7 +121,7 @@ const UserRegistration = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your name!",
+                    message: "Please enter your full name!",
                   },
                 ]}
               >
@@ -90,11 +133,11 @@ const UserRegistration = () => {
                 rules={[
                   {
                     type: "email",
-                    message: "The input is not valid E-mail!",
+                    message: "please enter a valid email address",
                   },
                   {
                     required: true,
-                    message: "Please input your E-mail!",
+                    message: "Please enter user email address",
                   },
                 ]}
               >
@@ -135,7 +178,10 @@ const UserRegistration = () => {
               </Form.Item>
               <Form.Item name="pin" label="User Pin">
                 <div className={styles.userPinGenerator}>
-                  <GeneratePin />
+                  <GeneratePin pin={userPin} setPin={setUserPin} />
+                  {error && (
+                    <div className="ant-form-item-explain-error">{error}</div>
+                  )}
                 </div>
               </Form.Item>
               <Form.Item {...tailFormItemLayout}>
@@ -146,15 +192,20 @@ const UserRegistration = () => {
             </Form>
           </div>
         </Col>
-        <Col span={8}>
-          <div className={styles.profileImageUploadSection}>
-            Profile Picture
-            <div className="user-registration-profile-wrapper">
-              <ProfilePictureUploader />
+        {false && (
+          <Col span={8}>
+            <div className={styles.profileImageUploadSection}>
+              Profile Picture
+              <div className="user-registration-profile-wrapper">
+                <ProfilePictureUploader
+                  fileList={fileList}
+                  setFileList={setFileList}
+                />
+              </div>
+              <FingerPrintScanner />
             </div>
-            <FingerPrintScanner />
-          </div>
-        </Col>
+          </Col>
+        )}
       </Row>
     </Fragment>
   );

@@ -20,6 +20,10 @@ export const appReducer = (state, action) => {
       return { ...state, logSheetName: action.payload };
     case actionTypes.setOrganizationDetails:
       return { ...state, organizationDetails: action.payload };
+    case actionTypes.setLogs:
+      return { ...state, logs: action.payload };
+    case actionTypes.setUsers:
+      return { ...state, users: action.payload };
     default:
       return state;
   }

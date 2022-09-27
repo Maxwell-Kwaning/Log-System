@@ -3,19 +3,15 @@ import {
   arrayUnion,
   collection,
   doc,
-  DocumentData,
   getDoc,
   getDocs,
   limit,
   query,
-  Query,
-  orderBy,
   onSnapshot,
-  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 import { database, storage } from "../config/firebaseConfig";
 
 const organizationsCollectionName = "organizations";
@@ -25,19 +21,9 @@ const organizationsCollectionRef = collection(
   organizationsCollectionName
 );
 
-// queries
-
-// const reactComponentsQuery = query(collectionRef, where('tag', '==', 'react'), orderBy('date', 'desc'));
-// const angularComponentsQuery = query(collectionRef, where('tag', '==', 'angular'), orderBy('date', 'desc'));
-// const bootstrapComponentsQuery = query(collectionRef, where('tag', '==', 'bootstrap'), orderBy('date', 'desc'));
-
-// const getCategoryQuery = (category: string): Query<DocumentData> => {
-//   return query(
-//     collectionRef,
-//     where("category", "==", category),
-//     orderBy("date", "desc")
-//   );
-// };
+// ==================================
+// organizations
+// ==================================
 
 const getDocuments = (query) => {
   return getDocs(query)
@@ -70,10 +56,10 @@ export const updateAccountDetails = (documentId, accountDetails) => {
   return updateDoc(documentRef, { accountDetails });
 };
 
-export const addNewLogSheet = (documentId, newLogSheet) => {
+export const addNewUser = (documentId, newUser) => {
   const documentRef = doc(database, organizationsCollectionName, documentId);
   return updateDoc(documentRef, {
-    logs: arrayUnion(newLogSheet),
+    users: arrayUnion(newUser),
   });
 };
 
@@ -88,79 +74,115 @@ export const accountLoginRequest = (email, password) => {
   return getDocuments(loginQuery);
 };
 
-// export const getAllCategories = () => {
-//   return getDocuments(categoriesCollectionRef);
-// };
+// ==================================
+// logs
+// ==================================
+const logsCollectionName = "logs";
+const logsCollectionRef = collection(database, logsCollectionName);
 
-function uploadComponentImage(file) {
-  if (!file) {
-    alert("Please choose a file first!");
-  }
-
-  const storageRef = ref(storage, `/images/${file.name}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-
-  uploadTask.on(
-    "state_changed",
-    (snapshot) => {
-      const percent = Math.round(
-        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-      );
-
-      // update progress
-      //  setPercent(percent);
-    },
-    (err) => console.log(err),
-    () => {
-      // download url
-      getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-        console.log(url);
-      });
-    }
+export const getAllLogs = (documentId) => {
+  const logsQuery = query(
+    logsCollectionRef,
+    where("documentId", "==", documentId)
   );
-}
 
-// export const deleteQuiz = (documentId: string): Promise<IFBResponse> => {
-//   const documentRef = doc(database, collectionName, documentId);
-//   return deleteDoc(documentRef)
-//     .then(() => {
-//       return { success: true, data: { message: actionMessages.quizDeleted } };
-//     })
-//     .catch(() => {
-//       return {
-//         success: false,
-//         data: { message: actionMessages.couldNotPublishQuiz },
-//       };
-//     });
-// };
+  return getDocuments(logsQuery);
+};
 
-// export const getAllReactComponents = () => {
-// 	return getDocuments(reactComponentsQuery);
-// };
+export const getAllLogsInRealTime = (organizationId, callback) => {
+  const logsQuery = query(
+    logsCollectionRef,
+    where("organizationId", "==", organizationId)
+  );
+  return onSnapshot(logsQuery, callback);
+};
 
-// export const getAllAngularComponents = () => {
-// 	return getDocuments(angularComponentsQuery);
-// };
+export const getLogDetails = (id) => {
+  const documentRef = doc(database, logsCollectionName, id);
+  return getDoc(documentRef);
+};
 
-// export const getAllBootstrapComponents = () => {
-// 	return getDocuments(bootstrapComponentsQuery);
-// };
+export const getLogDetailsInRealTime = (id, callback) => {
+  const documentRef = doc(database, logsCollectionName, id);
+  return onSnapshot(documentRef, callback);
+};
 
-// export const getAllComponentsInCategory = (category: string) => {
-//   return getDocuments(getCategoryQuery(category));
-// };
+export const addNewUserLog = (documentId, userDetails) => {
+  const documentRef = doc(database, logsCollectionName, documentId);
+  return updateDoc(documentRef, {
+    loggedUsers: arrayUnion(userDetails),
+  });
+};
 
-// export const updatedDownloads = (documentId: string, downloads: number) => {
-// 	const documentRef = doc(database, collectionName, documentId);
-// 	return updateDoc(documentRef, { downloads });
-// };
+export const createNewLogSheet = (newLogSheet) => {
+  return addDoc(logsCollectionRef, newLogSheet);
+};
 
-// export const updatedViews = (documentId: string, views: number) => {
-// 	const documentRef = doc(database, collectionName, documentId);
-// 	return updateDoc(documentRef, { views });
-// };
+export const deleteLog = (documentId) => {
+  const documentRef = doc(database, logsCollectionName, documentId);
+  return deleteDoc(documentRef);
+};
 
-// export const updatedLikes = (documentId: string, likes: number) => {
-// 	const documentRef = doc(database, collectionName, documentId);
-// 	return updateDoc(documentRef, { likes });
-// };
+export const updateLogStatus = (documentId, status) => {
+  const documentRef = doc(database, logsCollectionName, documentId);
+  return updateDoc(documentRef, { status });
+};
+
+// ==================================
+// users
+// ==================================
+const usersCollectionName = "users";
+const usersCollectionRef = collection(database, usersCollectionName);
+
+export const getAllUsers = (organizationId) => {
+  const usersQuery = query(
+    usersCollectionRef,
+    where("organizationId", "==", organizationId)
+  );
+
+  return getDocuments(usersQuery);
+};
+
+export const getAllUsersInRealTime = (organizationId, callback) => {
+  const usersQuery = query(
+    usersCollectionRef,
+    where("organizationId", "==", organizationId)
+  );
+  return onSnapshot(usersQuery, callback);
+};
+
+export const getUserDetails = (logId) => {
+  const getUserQuery = query(
+    usersCollectionRef,
+    where("id", "==", logId),
+    limit(1)
+  );
+
+  return getDocuments(getUserQuery);
+};
+
+export const createNewUser = (newUser) => {
+  return addDoc(usersCollectionRef, newUser);
+};
+
+export const uploadImage = (folderName, file) => {
+  const storageRef = ref(storage, `${folderName}/${file.name}`);
+  return uploadBytes(storageRef, file);
+};
+
+export const deleteUser = (documentId) => {
+  const documentRef = doc(database, usersCollectionName, documentId);
+  return deleteDoc(documentRef);
+};
+
+export const userLogRequest = (organizationId, email, pin) => {
+  const logQuery = query(
+    usersCollectionRef,
+    where("organizationId", "==", organizationId),
+    where("email", "==", email),
+    where("pin", "==", pin),
+    limit(1)
+  );
+
+  return getDocuments(logQuery);
+};
