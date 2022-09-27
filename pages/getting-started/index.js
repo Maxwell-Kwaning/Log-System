@@ -7,13 +7,17 @@ import { getSteps } from "../../helpers/organizations";
 import { enabledOrganizations } from "../../consts/consts";
 import { v4 as uid } from "uuid";
 import { getAccountDetails, getLogSheetDetails } from "../../helpers";
-import { addOrganization } from "../../services/firebase.service";
+import {
+  addOrganization,
+  createNewLogSheet,
+} from "../../services/firebase.service";
+import { actionTypes } from "../../consts/actions";
 
 const { Step } = Steps;
 
 const GettingStarted = () => {
   const router = useRouter();
-  const { state } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [current, setCurrent] = useState(0);
 
   const { selectedOrganization, isOrganizationSetupValid } = state;
@@ -40,29 +44,34 @@ const GettingStarted = () => {
     }
   };
 
-  const onFinishSetup = () => {
+  const onFinishSetup = async () => {
+    const logId = uid();
+
     const { logSheetName } = state;
+    const newAccountDetails = getAccountDetails(accountDetails);
+    const newLogSheet = getLogSheetDetails(logId, logSheetName);
+    const newOrganization = {
+      accountDetails: newAccountDetails,
+    };
+
+    addOrganization(newOrganization)
+      .then((res) => {
+        router.push(`/dashboard/${res.id}`);
+        message.success("Organization created successfully!");
+        dispatch({ type: actionTypes.resetSelectedOrganization });
+        createLog(res.id, logSheetName, newLogSheet);
+      })
+      .catch(() =>
+        message.error(
+          "Something went wrong! Could not create organization. Try again later"
+        )
+      );
+  };
+
+  const createLog = async (organizationId, logSheetName, newLogSheet) => {
     if (logSheetName.trim() !== "") {
-      const logId = uid();
-
-      const newAccountDetails = getAccountDetails(accountDetails);
-      const newLogSheet = getLogSheetDetails(logId, logSheetName);
-      const newOrganization = {
-        accountDetails: newAccountDetails,
-        users: [],
-        logs: [newLogSheet],
-      };
-
-      addOrganization(newOrganization)
-        .then((res) => {
-          router.push(`/dashboard/${res.id}`);
-          message.success("Organization created successfully!");
-        })
-        .catch(() =>
-          message.error(
-            "Something went wrong! Could not create organization. Try again later"
-          )
-        );
+      await createNewLogSheet({ ...newLogSheet, organizationId });
+      dispatch({ type: actionTypes.setLogSheetName, payload: "" });
     }
   };
 

@@ -14,6 +14,8 @@ export const appReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.addSelectedOrganization:
       return { ...state, selectedOrganization: action.payload };
+    case actionTypes.resetSelectedOrganization:
+      return { ...state, selectedOrganization: {} };
     case actionTypes.setOrganizationSetupValidity:
       return { ...state, isOrganizationSetupValid: action.payload };
     case actionTypes.setLogSheetName:
