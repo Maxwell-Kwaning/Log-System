@@ -18,6 +18,7 @@ a {
 .page-header-container {
   background-color: #40a9ff;
   padding: 5px 20px;
+  display: flex;
 }
 
 .page-header-container .app-title {

@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import styles from "../../../styles/NewLog.module.css";
-import { Button, Input, Typography } from "antd";
-import { addNewLogSheet } from "../../../services/firebase.service";
+import { Button, Input, Result, Typography } from "antd";
+import { createNewLogSheet } from "../../../services/firebase.service";
 import { useRouter } from "next/router";
 import { getLogSheetDetails } from "../../../helpers";
 import { v4 as uid } from "uuid";
@@ -18,11 +18,14 @@ export const NewLogSheet = () => {
 
   const handleCreateNewLogSheet = async () => {
     if (logSheetName.trim() !== "") {
-      const newLogSheet = getLogSheetDetails(uid(), logSheetName);
+      const newLogSheet = {
+        ...getLogSheetDetails(uid(), logSheetName),
+        organizationId,
+      };
 
-      await addNewLogSheet(organizationId, newLogSheet);
+      const res = await createNewLogSheet(newLogSheet);
       setDisplayName(newLogSheet.logSheetName);
-      setLink(newLogSheet.logLink);
+      setLink(`${newLogSheet.logLink}/${res.id}`);
       setLogSheetName("");
       setIsCreated(true);
     }
@@ -31,7 +34,7 @@ export const NewLogSheet = () => {
   useEffect(() => {
     let timer;
     if (isCreated) {
-      setTimeout(() => setIsCreated(false), 10000);
+      setTimeout(() => setIsCreated(false), 20000);
     }
 
     return () => {
@@ -62,21 +65,24 @@ export const NewLogSheet = () => {
       )}
 
       {isCreated && (
-        <div className={styles.container}>
-          <h3 className={styles.title} style={{ color: "green" }}>
-            Log Created Successfully
-          </h3>
-
-          <div>
-            <div>Log sheet name: </div>
-            <h2>{displayName}</h2>
-          </div>
-
-          <div style={{ marginTop: "1rem" }}>
-            <div>Login link: </div>
-            <Paragraph copyable>{link}</Paragraph>
-          </div>
-        </div>
+        <Result
+          status="success"
+          title={`${displayName} Created Successfully`}
+          subTitle={
+            <>
+              <Paragraph copyable>{link}</Paragraph>
+            </>
+          }
+          extra={[
+            <Button
+              type="primary"
+              key="console"
+              onClick={() => setIsCreated(false)}
+            >
+              Create new
+            </Button>,
+          ]}
+        />
       )}
     </Fragment>
   );

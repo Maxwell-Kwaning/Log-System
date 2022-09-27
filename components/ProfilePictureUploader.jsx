@@ -2,9 +2,7 @@ import { Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 import { useState } from "react";
 
-const ProfilePictureUploader = () => {
-  const [fileList, setFileList] = useState([]);
-
+const ProfilePictureUploader = ({ fileList, setFileList }) => {
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };

@@ -1,17 +1,23 @@
 import { Radio } from "antd";
 import React, { useState } from "react";
+import { updateLogStatus } from "../../services/firebase.service";
 
-export const StatusRenderer = ({ initialValue }) => {
+export const StatusRenderer = ({ initialValue, record }) => {
   const [value, setValue] = useState(initialValue);
-  const onChange = ({ target: { value } }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onChange = async ({ target: { value } }) => {
+    setIsLoading(true);
+    await updateLogStatus(record.documentId, value);
     setValue(value);
+    setIsLoading(false);
   };
 
   return (
     <div>
       <Radio.Group
         onChange={onChange}
-        defaultValue="inactive"
+        defaultValue={initialValue}
         size="small"
         buttonStyle="solid"
       >

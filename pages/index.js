@@ -7,15 +7,6 @@ import { getAllOrganizations } from "../services/firebase.service";
 const { Title } = Typography;
 
 export default function Home() {
-  // useEffect(() => {
-  //   const fetchOrganizations = async () => {
-  //     const organizations = await getAllOrganizations();
-  //     console.log(organizations);
-  //   };
-
-  //   fetchOrganizations();
-  // }, []);
-
   return (
     <>
       <div className={styles.container}>
@@ -60,7 +51,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div style={{ width: "90%", margin: "2rem auto", paddingBottom: "20px" }}>
+      {/* <div style={{ width: "90%", margin: "2rem auto", paddingBottom: "20px" }}>
         <h1>Test Pages</h1>
 
         <Link href="/admin/login">Admin Login</Link>
@@ -75,7 +66,7 @@ export default function Home() {
         <br />
         <Link href="/user/login">User Login</Link>
         <br />
-      </div>
+      </div> */}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { Tabs } from "antd";
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import {
   BiSpreadsheet,
   BiBookContent,
@@ -14,12 +14,14 @@ import { LogSheets } from "../../components/Dashboard/Common/ViewLogs";
 import { Users } from "../../components/Dashboard/Common/ViewUsers";
 import { EditDetails } from "../../components/Dashboard/Tertiary/EditDetails";
 import {
-  getOrganizationDetails,
+  getAllLogsInRealTime,
+  getAllUsersInRealTime,
   getOrganizationDetailsInRealTime,
 } from "../../services/firebase.service";
 import { useRouter } from "next/router";
 import { AppContext } from "../../store/context";
 import { actionTypes } from "../../consts/actions";
+import { ContentLoading } from "../../components/ContentLoading";
 
 const items = [
   {
@@ -79,33 +81,76 @@ const items = [
 ];
 
 const OrganizationDashboard = () => {
+  const router = useRouter();
   const { dispatch } = useContext(AppContext);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { query } = useRouter();
   const { organizationId } = query;
 
   useEffect(() => {
-    const getOrganizationAccountDetails = async () => {
-      await getOrganizationDetailsInRealTime(
-        organizationId,
-        (organizationSnap) => {
-          dispatch({
-            type: actionTypes.setOrganizationDetails,
-            payload: organizationSnap.data(),
-          });
-        }
-      );
-    };
-
     if (organizationId != null) {
       getOrganizationAccountDetails();
+      getLogs();
+      getUsers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizationId]);
 
+  const getOrganizationAccountDetails = async () => {
+    setIsLoading(true);
+    await getOrganizationDetailsInRealTime(
+      organizationId,
+      (organizationSnap) => {
+        if (organizationSnap.data() != null) {
+          dispatch({
+            type: actionTypes.setOrganizationDetails,
+            payload: organizationSnap.data(),
+          });
+          setIsLoading(false);
+        } else {
+          // router.push(`/404`);
+        }
+      }
+    );
+  };
+
+  const getLogs = async () => {
+    await getAllLogsInRealTime(organizationId, (logsSnapshot) => {
+      const logs = [];
+      logsSnapshot.forEach((doc) => {
+        const logLink = `${doc.data().logLink}/${doc.id}`;
+        logs.push({ ...doc.data(), key: doc.id, documentId: doc.id, logLink });
+      });
+      dispatch({
+        type: actionTypes.setLogs,
+        payload: logs,
+      });
+    });
+  };
+
+  const getUsers = async () => {
+    await getAllUsersInRealTime(organizationId, (logsSnapshot) => {
+      const users = [];
+      logsSnapshot.forEach((doc) => {
+        users.push({ ...doc.data(), key: doc.id, documentId: doc.id });
+      });
+      dispatch({
+        type: actionTypes.setUsers,
+        payload: users,
+      });
+    });
+  };
+
   return (
     <>
-      <Tabs tabPosition="left" items={items} />
+      {isLoading ? (
+        <div style={{ margin: "20px" }}>
+          <ContentLoading />
+        </div>
+      ) : (
+        <Tabs tabPosition="left" items={items} />
+      )}
     </>
   );
 };

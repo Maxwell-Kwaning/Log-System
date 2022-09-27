@@ -10,7 +10,13 @@ const initialState = {
   selectedOrganization: {},
   isOrganizationSetupValid: false,
   logSheetName: "",
-  organizationDetails: {},
+  organizationDetails: {
+    accountDetails: {
+      departments: [],
+    },
+  },
+  logs: [],
+  users: [],
 };
 
 function MyApp({ Component, pageProps }) {

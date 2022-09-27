@@ -3,6 +3,8 @@ export const actionTypes = {
   setOrganizationSetupValidity: "SET_ORGANIZATION_SETUP_VALIDITY",
   setLogSheetName: "SET_LOG_SHEET_NAME",
   setOrganizationDetails: "SET_ORGANIZATION_DETAILS",
+  setLogs: "SET_LOGS",
+  setUsers: "SET_USERS",
 
   // tertiary institution actions
   tertiary: {
