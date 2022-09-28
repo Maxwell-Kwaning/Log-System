@@ -1,10 +1,10 @@
-import { Table, Input, Button, Typography } from "antd";
-import React, { useContext, useEffect, useState } from "react";
-import { AppContext } from "../../../store/context";
+import { Table, Input, Button, Typography } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../../store/context';
 import {
   getLoggedUsersColumnDefs,
   getLogsColumnDefs,
-} from "./columnDefs/logs-column-def";
+} from './columnDefs/logs-column-def';
 
 const { Search } = Input;
 const { Paragraph } = Typography;
@@ -12,13 +12,13 @@ const { Paragraph } = Typography;
 export const LogSheets = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const { state } = useContext(AppContext);
   const [isView, setIsView] = useState(false);
   const [loggedUsers, setLoggedUsers] = useState([]);
   const [selectedLog, setSelectedLog] = useState(undefined);
-  const [logName, setLogName] = useState("");
-  const [logLink, setLogLink] = useState("");
+  const [logName, setLogName] = useState('');
+  const [logLink, setLogLink] = useState('');
 
   const { logs } = state;
 
@@ -52,18 +52,18 @@ export const LogSheets = () => {
   return (
     <>
       {!isView ? (
-        <div style={{ margin: "1rem" }}>
-          <div style={{ margin: "2rem 0" }}>
+        <div style={{ margin: '1rem' }}>
+          <div style={{ margin: '2rem 0' }}>
             <div>
-              Total Logs:{" "}
-              <span style={{ fontWeight: "bold" }}>{data.length}</span>
+              Total Logs:{' '}
+              <span style={{ fontWeight: 'bold' }}>{data.length}</span>
             </div>
           </div>
           <Search
             placeholder="search logs by name"
             onChange={(e) => setSearchText(e.target.value)}
             enterButton
-            style={{ marginBottom: "20px", width: "300px" }}
+            style={{ marginBottom: '20px', width: '300px' }}
           />
           <Table
             columns={getLogsColumnDefs(handleViewLog)}
@@ -72,26 +72,26 @@ export const LogSheets = () => {
           />
         </div>
       ) : (
-        <div style={{ margin: "1rem" }}>
-          <div style={{ margin: "2rem 0" }}>
-            <div style={{ fontWeight: "bold" }}>{logName}</div>
+        <div style={{ margin: '1rem' }}>
+          <div style={{ margin: '2rem 0' }}>
+            <div style={{ fontWeight: 'bold' }}>{logName}</div>
             <div>
-              Number of Logs:{" "}
-              <span style={{ fontWeight: "bold" }}>{loggedUsers.length}</span>
+              Number of Logs:{' '}
+              <span style={{ fontWeight: 'bold' }}>{loggedUsers.length}</span>
             </div>
             <br />
             <div></div>
           </div>
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
             <Button
               type="primary"
-              style={{ marginBottom: "20px" }}
+              style={{ marginBottom: '20px' }}
               onClick={() => setIsView(false)}
             >
               View all logs
