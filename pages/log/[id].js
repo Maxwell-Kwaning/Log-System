@@ -1,14 +1,15 @@
-import { Button, Col, Form, Input, Row, Result, message } from "antd";
-import styles from "../../styles/UserRegistration.module.css";
-import { Fragment, useEffect, useState } from "react";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import FingerPrintScanner from "../../components/FingerPrintScanner";
+import { Button, Col, Form, Input, Row, Result, message } from 'antd';
+import styles from '../../styles/UserRegistration.module.css';
+import { Fragment, useEffect, useState } from 'react';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import FingerPrintScanner from '../../components/FingerPrintScanner';
 import {
   addNewUserLog,
   getLogDetailsInRealTime,
   userLogRequest,
-} from "../../services/firebase.service";
-import { useRouter } from "next/router";
+} from '../../services/firebase.service';
+import { useRouter } from 'next/router';
+import { Timestamp } from 'firebase/firestore';
 
 const formItemLayout = {
   labelCol: {
@@ -42,16 +43,16 @@ const tailFormItemLayout = {
 };
 
 const style = {
-  color: "gray",
-  fontWeight: "bold",
-  textTransform: "uppercase",
-  marginTop: "20px",
+  color: 'gray',
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+  marginTop: '20px',
 };
 
 const UserLogAttendance = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
-  const [logDetails, setLogDetails] = useState("");
+  const [logDetails, setLogDetails] = useState('');
   const router = useRouter();
   const { id } = router.query;
 
@@ -67,13 +68,13 @@ const UserLogAttendance = () => {
     );
 
     if (res.length === 0) {
-      message.error("Invalid user details");
+      message.error('Invalid user details');
     } else {
       if (isUserLogged(email.trim())) {
-        message.info("User already logged");
+        message.info('User already logged');
         return false;
       }
-      await addNewUserLog(id, res[0]);
+      await addNewUserLog(id, { ...res[0], loggedAt: Timestamp.now() });
       setIsLogged(true);
       form.resetFields();
     }
@@ -100,13 +101,13 @@ const UserLogAttendance = () => {
 
   return !isLoading ? (
     <Fragment>
-      {logDetails.status === "active" ? (
+      {logDetails.status === 'active' ? (
         <>
           {!isLogged ? (
             <Row>
               <Col span={16} offset={5}>
                 <h1 style={style}>
-                  {logDetails.logSheetName || "Log Attendance"}
+                  {logDetails.logSheetName || 'Log Attendance'}
                 </h1>
               </Col>
               <Col span={16}>
@@ -117,7 +118,7 @@ const UserLogAttendance = () => {
                     name="register"
                     onFinish={onFinish}
                     initialValues={{
-                      prefix: "233",
+                      prefix: '233',
                     }}
                     scrollToFirstError
                   >
@@ -130,12 +131,12 @@ const UserLogAttendance = () => {
                       label="E-mail"
                       rules={[
                         {
-                          type: "email",
-                          message: "The input is not valid E-mail!",
+                          type: 'email',
+                          message: 'The input is not valid E-mail!',
                         },
                         {
                           required: true,
-                          message: "Please input your E-mail!",
+                          message: 'Please input your E-mail!',
                         },
                       ]}
                     >
@@ -148,7 +149,7 @@ const UserLogAttendance = () => {
                       rules={[
                         {
                           required: true,
-                          message: "Please enter your Pin",
+                          message: 'Please enter your Pin',
                         },
                       ]}
                     >
@@ -160,7 +161,7 @@ const UserLogAttendance = () => {
                           visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                         }
                         placeholder="Pin Code"
-                        style={{ width: "150px" }}
+                        style={{ width: '150px' }}
                         maxLength={6}
                         pattern="[0-9]*"
                         inputMode="numeric"
